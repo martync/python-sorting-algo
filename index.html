@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Algorithmes de tri</title>
+    <meta charset="utf-8" />
+    <style type="text/css">
+      body {
+        text-align: center;
+        min-width: 500px;
+      }
+    </style>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="http://code.jquery.com/jquery.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+ 
+    <script>
+ 
+      // log function
+      log = function(data){
+        $("div#terminal").html("</br>" + data);
+        console.log(data);
+      };
+ 
+      $(document).ready(function () {
+        $("div#message_details").hide()
+ 
+        var ws = new WebSocket("ws://localhost:8888/ws");
+
+        ws.onmessage = function(evt) {
+          Plotly.update('chart', {y: [JSON.parse(evt.data)] });
+        };
+
+        // Close Websocket callback
+        ws.onclose = function(evt) {
+          log("***Connection is closed***");
+        };
+
+        ws.onopen = function(evt) { 
+          $("#host").css("background", "#00ff00"); 
+          $("#port").css("background", "#00ff00"); 
+          $("#uri").css("background", "#00ff00");
+          $("div#message_details").show();
+          log("***Connection Opened***");
+        };
+
+        // Send websocket message function
+        $("#send").click(function(evt) {
+          datas = JSON.stringify({"algo": $("#id_algo").val(), "file": $("#id_file").val(), "speed": $("#id_speed").val()})
+            ws.send(datas);
+        });
+      });
+    </script>
+
+
+
+  </head>
+ 
+  <body class="text-center">
+    <h1>Algorithmes de tri</h1>
+    <div id="message_details">
+      <hr>
+        <label for="id_algo">Algo:</label>
+        <select name="algo" id="id_algo">
+          <option value="bubblesort">Bubble sort</option>
+          <option value="insertionsort">Insertion sort</option>
+          <option value="selectionsort">Selection sort</option>
+          <option value="mergesort">Merge sort</option>
+          <option value="quicksort">Quick sort</option>
+          <option value="shellsort">Shell sort</option>
+          <option value="heapsort">Heap sort</option>
+        </select>
+        /
+
+        <label for="id_file">Données:</label>
+        <select name="file" id="id_file">
+          <option value="p">Petit échantillon</option>
+          <option value="i">Villes d'Isère</option>
+          <option value="f">Villes de France</option>
+        </select>
+        /
+        <label for="id_file">Animation:</label>
+        <select name="speed" id="id_speed">
+          <option value="1">Rapide</option>
+          <option value="2">Moyenne</option>
+          <option value="3">Lente</option>
+        </select>
+
+        <input type="submit" id="send" value="ok" />
+    </div>
+    <div id="terminal">
+        
+    </div>
+      <div id="chart"></div>
+
+  </body>
+
+<script>
+
+var data = [
+  {
+    y: [],
+    type: 'bar'
+  }
+];
+
+Plotly.newPlot('chart', data);
+
+
+</script>
+
+</html>
