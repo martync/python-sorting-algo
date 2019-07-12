@@ -8,15 +8,7 @@ import tornado.ioloop
 import tornado.web
 import socket
 
-from solution.sorting_functions import (
-    bubblesort,
-    insertionsort,
-    selectionsort,
-    mergesort,
-    quicksort,
-    shellsort,
-    heapsort,
-)
+from sorting_functions import bubblesort, insertionsort, selectionsort, mergesort, quicksort, shellsort, heapsort
 
 
 ALGO_CHOICES = {
